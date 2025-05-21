@@ -1,0 +1,41 @@
+@page
+@model SafeVault.Pages.AdminPanelModel
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<h2>Admin Panel</h2>
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-info">@Model.StatusMessage</div>
+}
+
+<form method="post">
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>Roles</th>
+        </tr>   
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    @foreach (var role in Model.Roles)
+                    {
+                        var isChecked = Model.UserRoles.ContainsKey(user.Id) && Model.UserRoles[user.Id].Contains(role.Name);
+                        <label>
+                            <input type="checkbox"
+                                   name="SelectedRoles[@user.Id][]"
+                                   value="@role.Name"
+                                   @(isChecked ? "checked" : "") />
+                            @role.Name
+                        </label>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+    <button type="submit">Save Changes</button>
+</form>

@@ -1,0 +1,42 @@
+@page
+@model SafeVault.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h2>User Management</h2>
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert alert-info">@Model.StatusMessage</div>
+}
+
+<form method="post">
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>Roles</th>
+        </tr>
+        @for (int i = 0; i < Model.Users.Count; i++)
+        {
+            var user = Model.Users[i];
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    @foreach (var role in Model.Roles)
+                    {
+                        var isChecked = Model.UserRoles.ContainsKey(user.Id) && Model.UserRoles[user.Id].Contains(role.Name);
+                        <label>
+                            <input type="checkbox"
+                                   name="SelectedRoles[@user.Id][]"
+                                   value="@role.Name"
+                                   @(isChecked ? "checked" : "") />
+                            @role.Name
+                        </label>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+    <button type="submit">Guardar cambios</button>
+</form>
